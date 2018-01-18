@@ -1,11 +1,17 @@
 FROM pytorch/pytorch
 
+#-----------------------------------
+# Pytorch
+#-----------------------------------
 RUN pip install tqdm inferno
 RUN pip install http://download.pytorch.org/whl/cu80/torch-0.3.0.post4-cp35-cp35m-linux_x86_64.whl
 
-# Sphinx
 RUN apt-get update
 RUN apt-get install wget
+
+#-----------------------------------
+# Sphinx
+#-----------------------------------
 RUN mkdir -p /home/sphinx
 WORKDIR /home/sphinx
 RUN wget -O pocketsphinx-5prealpha.tar.gz https://sourceforge.net/projects/cmusphinx/files/pocketsphinx/5prealpha/pocketsphinx-5prealpha.tar.gz/download 
@@ -32,5 +38,19 @@ RUN make install
 
 RUN ldconfig
 
-WORKDIR /home
+#-----------------------------------
+# CTC
+#-----------------------------------
 
+RUN apt-get install -y cmake
+WORKDIR /home/ctc
+RUN git clone https://github.com/SeanNaren/warp-ctc.git
+WORKDIR /home/ctc/warp-ctc
+RUN mkdir build && cd build && cmake .. && make && make install
+RUN cd pytorch_binding && python3 setup.py install
+
+#-----------------------------------
+# Cleanup
+#-----------------------------------
+
+WORKDIR /home
