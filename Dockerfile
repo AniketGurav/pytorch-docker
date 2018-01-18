@@ -48,6 +48,7 @@ RUN git clone https://github.com/SeanNaren/warp-ctc.git
 WORKDIR /home/ctc/warp-ctc
 RUN mkdir build && cd build && cmake .. && make && make install
 RUN cd pytorch_binding && python3 setup.py install
+RUN ldconfig
 
 #-----------------------------------
 # Cleanup
